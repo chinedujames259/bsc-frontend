@@ -13,9 +13,7 @@ class ApiService {
   final StorageService _storage = StorageService();
 
   Future<Map<String, String>> _getHeaders({bool includeAuth = false}) async {
-    final headers = {
-      'Content-Type': 'application/json',
-    };
+    final headers = {'Content-Type': 'application/json'};
 
     if (includeAuth) {
       final token = await _storage.getToken();
@@ -33,17 +31,16 @@ class ApiService {
   }) async {
     try {
       final url = Uri.parse('${AppConfig.baseUrl}/signin');
-      
+
       print('Attempting sign in to: $url');
-      
-      final response = await http.post(
-        url,
-        headers: await _getHeaders(),
-        body: jsonEncode({
-          'email': email,
-          'password': password,
-        }),
-      ).timeout(AppConfig.connectionTimeout);
+
+      final response = await http
+          .post(
+            url,
+            headers: await _getHeaders(),
+            body: jsonEncode({'email': email, 'password': password}),
+          )
+          .timeout(AppConfig.connectionTimeout);
 
       print('Sign in response status: ${response.statusCode}');
       print('Sign in response body: ${response.body}');
@@ -54,7 +51,10 @@ class ApiService {
         return AuthResponse.fromJson(data);
       } else {
         final error = jsonDecode(response.body);
-        throw Exception(error['message'] ?? 'Sign in failed with status ${response.statusCode}');
+        throw Exception(
+          error['message'] ??
+              'Sign in failed with status ${response.statusCode}',
+        );
       }
     } catch (e) {
       print('Sign in error: $e');
@@ -72,7 +72,7 @@ class ApiService {
     required String confirmPassword,
   }) async {
     final url = Uri.parse('${AppConfig.baseUrl}/signup');
-    
+
     final response = await http.post(
       url,
       headers: await _getHeaders(),
@@ -92,7 +92,7 @@ class ApiService {
 
   Future<User> getProfile() async {
     final url = Uri.parse('${AppConfig.baseUrl}/profile');
-    
+
     final response = await http.get(
       url,
       headers: await _getHeaders(includeAuth: true),
@@ -109,7 +109,7 @@ class ApiService {
 
   Future<List<Category>> getCategories() async {
     final url = Uri.parse('${AppConfig.baseUrl}/categories');
-    
+
     final response = await http.get(
       url,
       headers: await _getHeaders(includeAuth: true),
@@ -126,7 +126,7 @@ class ApiService {
 
   Future<Category> createCategory(String name) async {
     final url = Uri.parse('${AppConfig.baseUrl}/categories');
-    
+
     final response = await http.post(
       url,
       headers: await _getHeaders(includeAuth: true),
@@ -142,9 +142,14 @@ class ApiService {
     }
   }
 
-  Future<Map<String, dynamic>> getProducts({int page = 1, int limit = 10}) async {
-    final url = Uri.parse('${AppConfig.baseUrl}/products?page=$page&limit=$limit');
-    
+  Future<Map<String, dynamic>> getProducts({
+    int page = 1,
+    int limit = 10,
+  }) async {
+    final url = Uri.parse(
+      '${AppConfig.baseUrl}/products?page=$page&limit=$limit',
+    );
+
     final response = await http.get(
       url,
       headers: await _getHeaders(includeAuth: true),
@@ -155,11 +160,8 @@ class ApiService {
       final products = (data['products'] as List)
           .map((product) => Product.fromJson(product))
           .toList();
-      
-      return {
-        'products': products,
-        'pagination': data['pagination'],
-      };
+
+      return {'products': products, 'pagination': data['pagination']};
     } else {
       final error = jsonDecode(response.body);
       throw Exception(error['message'] ?? 'Failed to fetch products');
@@ -172,8 +174,10 @@ class ApiService {
     int limit = 10,
   }) async {
     final encodedQuery = Uri.encodeComponent(query);
-    final url = Uri.parse('${AppConfig.baseUrl}/products/search?q=$encodedQuery&page=$page&limit=$limit');
-    
+    final url = Uri.parse(
+      '${AppConfig.baseUrl}/products/search?q=$encodedQuery&page=$page&limit=$limit',
+    );
+
     final response = await http.get(
       url,
       headers: await _getHeaders(includeAuth: true),
@@ -184,7 +188,7 @@ class ApiService {
       final products = (data['products'] as List)
           .map((product) => Product.fromJson(product))
           .toList();
-      
+
       return {
         'products': products,
         'pagination': data['pagination'],
@@ -208,21 +212,23 @@ class ApiService {
   }) async {
     final url = Uri.parse('${AppConfig.baseUrl}/products');
     final token = await _storage.getToken();
-    
+
     var request = http.MultipartRequest('POST', url);
-    
+
     if (token != null) {
       request.headers['Authorization'] = 'Bearer $token';
     }
-    
+
     request.fields['name'] = name;
     request.fields['slug'] = slug;
     request.fields['sku'] = sku;
     if (description != null) request.fields['description'] = description;
-    if (stockCount != null) request.fields['stockCount'] = stockCount.toString();
+    if (stockCount != null)
+      request.fields['stockCount'] = stockCount.toString();
     if (price != null) request.fields['price'] = price;
-    if (categoryId != null) request.fields['categoryId'] = categoryId.toString();
-    
+    if (categoryId != null)
+      request.fields['categoryId'] = categoryId.toString();
+
     if (imagePaths != null && imagePaths.isNotEmpty) {
       for (var imagePath in imagePaths) {
         var file = await http.MultipartFile.fromPath('images', imagePath);
@@ -242,9 +248,40 @@ class ApiService {
     }
   }
 
+  Future<Product> getProductById(int id) async {
+    final url = Uri.parse('${AppConfig.baseUrl}/products/$id');
+
+    final response = await http.get(
+      url,
+      headers: await _getHeaders(includeAuth: true),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return Product.fromJson(data);
+    } else {
+      final error = jsonDecode(response.body);
+      throw Exception(error['message'] ?? 'Failed to fetch product');
+    }
+  }
+
+  Future<void> deleteProduct(int id) async {
+    final url = Uri.parse('${AppConfig.baseUrl}/products/$id');
+
+    final response = await http.delete(
+      url,
+      headers: await _getHeaders(includeAuth: true),
+    );
+
+    if (response.statusCode != 200) {
+      final error = jsonDecode(response.body);
+      throw Exception(error['message'] ?? 'Failed to delete product');
+    }
+  }
+
   Future<UserStats> getStats() async {
     final url = Uri.parse('${AppConfig.baseUrl}/stats');
-    
+
     final response = await http.get(
       url,
       headers: await _getHeaders(includeAuth: true),
@@ -260,8 +297,10 @@ class ApiService {
   }
 
   Future<Map<String, dynamic>> getOrders({int page = 1, int limit = 10}) async {
-    final url = Uri.parse('${AppConfig.baseUrl}/orders?page=$page&limit=$limit');
-    
+    final url = Uri.parse(
+      '${AppConfig.baseUrl}/orders?page=$page&limit=$limit',
+    );
+
     final response = await http.get(
       url,
       headers: await _getHeaders(includeAuth: true),
@@ -272,11 +311,8 @@ class ApiService {
       final orders = (data['orders'] as List)
           .map((order) => Order.fromJson(order))
           .toList();
-      
-      return {
-        'orders': orders,
-        'pagination': data['pagination'],
-      };
+
+      return {'orders': orders, 'pagination': data['pagination']};
     } else {
       final error = jsonDecode(response.body);
       throw Exception(error['message'] ?? 'Failed to fetch orders');
@@ -285,7 +321,7 @@ class ApiService {
 
   Future<Order> createOrder(List<Map<String, dynamic>> items) async {
     final url = Uri.parse('${AppConfig.baseUrl}/orders');
-    
+
     final response = await http.post(
       url,
       headers: await _getHeaders(includeAuth: true),
@@ -303,7 +339,7 @@ class ApiService {
 
   Future<Order> getOrderById(int id) async {
     final url = Uri.parse('${AppConfig.baseUrl}/orders/$id');
-    
+
     final response = await http.get(
       url,
       headers: await _getHeaders(includeAuth: true),
@@ -317,5 +353,36 @@ class ApiService {
       throw Exception(error['message'] ?? 'Failed to fetch order');
     }
   }
-}
 
+  Future<Order> updateOrderStatus(int id, String status) async {
+    final url = Uri.parse('${AppConfig.baseUrl}/orders/$id');
+
+    final response = await http.patch(
+      url,
+      headers: await _getHeaders(includeAuth: true),
+      body: jsonEncode({'status': status}),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return Order.fromJson(data);
+    } else {
+      final error = jsonDecode(response.body);
+      throw Exception(error['message'] ?? 'Failed to update order status');
+    }
+  }
+
+  Future<void> deleteOrder(int id) async {
+    final url = Uri.parse('${AppConfig.baseUrl}/orders/$id');
+
+    final response = await http.delete(
+      url,
+      headers: await _getHeaders(includeAuth: true),
+    );
+
+    if (response.statusCode != 200) {
+      final error = jsonDecode(response.body);
+      throw Exception(error['message'] ?? 'Failed to delete order');
+    }
+  }
+}

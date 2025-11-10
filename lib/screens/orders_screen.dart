@@ -4,6 +4,7 @@ import '../providers/order_provider.dart';
 import '../providers/product_provider.dart';
 import '../models/order.dart';
 import '../models/product.dart';
+import 'order_detail_screen.dart';
 
 class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
@@ -43,7 +44,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
     setState(() {
       _showSearchResults = query.isNotEmpty && _searchFocusNode.hasFocus;
     });
-    
+
     if (query.isNotEmpty) {
       _performSearch(query);
     } else {
@@ -105,7 +106,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
     if (product.price == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Product does not have a price. Cannot add to invoice.'),
+          content: Text(
+            'Product does not have a price. Cannot add to invoice.',
+          ),
           backgroundColor: Colors.orange,
           duration: Duration(seconds: 2),
         ),
@@ -127,15 +130,17 @@ class _OrdersScreenState extends State<OrdersScreen> {
           quantity: _invoiceItems[existingIndex].quantity + 1,
         );
       } else {
-        _invoiceItems.add(InvoiceItem(
-          productId: product.id,
-          productName: product.name,
-          productSku: product.sku,
-          price: product.price,
-          quantity: 1,
-        ));
+        _invoiceItems.add(
+          InvoiceItem(
+            productId: product.id,
+            productName: product.name,
+            productSku: product.sku,
+            price: product.price,
+            quantity: 1,
+          ),
+        );
       }
-      
+
       // Clear search and hide overlay
       _searchController.clear();
       _searchFocusNode.unfocus();
@@ -167,10 +172,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
   }
 
   double _calculateTotal() {
-    return _invoiceItems.fold<double>(
-      0.0,
-      (sum, item) => sum + item.total,
-    );
+    return _invoiceItems.fold<double>(0.0, (sum, item) => sum + item.total);
   }
 
   Future<void> _submitOrder() async {
@@ -234,10 +236,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                   child: const Text(
                     'Orders',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -257,7 +256,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     child: Center(
                       child: Column(
                         children: [
-                          Icon(Icons.error_outline, size: 48, color: Colors.red.shade300),
+                          Icon(
+                            Icons.error_outline,
+                            size: 48,
+                            color: Colors.red.shade300,
+                          ),
                           const SizedBox(height: 8),
                           Text(
                             orderProvider.error!,
@@ -281,7 +284,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     child: Center(
                       child: Column(
                         children: [
-                          Icon(Icons.receipt_long, size: 48, color: Colors.grey.shade400),
+                          Icon(
+                            Icons.receipt_long,
+                            size: 48,
+                            color: Colors.grey.shade400,
+                          ),
                           const SizedBox(height: 8),
                           Text(
                             'No orders yet',
@@ -302,13 +309,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 SliverPadding(
                   padding: const EdgeInsets.all(16.0),
                   sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final order = orderProvider.orders[index];
-                        return _OrderCard(order: order);
-                      },
-                      childCount: orderProvider.orders.length,
-                    ),
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final order = orderProvider.orders[index];
+                      return _OrderCard(order: order);
+                    }, childCount: orderProvider.orders.length),
                   ),
                 ),
               const SliverToBoxAdapter(child: SizedBox(height: 100)),
@@ -320,10 +324,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
         onPressed: _startCreatingInvoice,
         backgroundColor: Colors.deepPurple,
         icon: const Icon(Icons.add, color: Colors.white),
-        label: const Text(
-          'New Invoice',
-          style: TextStyle(color: Colors.white),
-        ),
+        label: const Text('New Invoice', style: TextStyle(color: Colors.white)),
       ),
     );
   }
@@ -423,16 +424,20 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: Colors.deepPurple, width: 2),
+                      borderSide: const BorderSide(
+                        color: Colors.deepPurple,
+                        width: 2,
+                      ),
                     ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
                   ),
                 ),
               ),
               // Invoice Items List
-              Expanded(
-                child: _buildInvoiceItemsList(),
-              ),
+              Expanded(child: _buildInvoiceItemsList()),
               // Total and Submit Button
               Container(
                 padding: const EdgeInsets.all(16.0),
@@ -473,7 +478,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: (_invoiceItems.isEmpty || _isCreatingOrder) ? null : _submitOrder,
+                        onPressed: (_invoiceItems.isEmpty || _isCreatingOrder)
+                            ? null
+                            : _submitOrder,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.deepPurple,
                           foregroundColor: Colors.white,
@@ -493,19 +500,27 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                     height: 20,
                                     child: CircularProgressIndicator(
                                       strokeWidth: 2,
-                                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white,
+                                      ),
                                     ),
                                   ),
                                   SizedBox(width: 12),
                                   Text(
                                     'Creating Order...',
-                                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ],
                               )
                             : const Text(
                                 'Create Order',
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                       ),
                     ),
@@ -521,10 +536,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
       ),
     );
   }
-  
+
   Widget _buildSearchResultsOverlay() {
     final productProvider = context.watch<ProductProvider>();
-    
+
     return GestureDetector(
       onTap: () {
         // Allow tapping outside to close
@@ -543,7 +558,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
               borderRadius: BorderRadius.circular(12),
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 16),
-                constraints: const BoxConstraints(maxHeight: 400, maxWidth: 500),
+                constraints: const BoxConstraints(
+                  maxHeight: 400,
+                  maxWidth: 500,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
@@ -568,7 +586,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.search, color: Colors.deepPurple, size: 20),
+                          const Icon(
+                            Icons.search,
+                            color: Colors.deepPurple,
+                            size: 20,
+                          ),
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
@@ -593,9 +615,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       ),
                     ),
                     // Results List
-                    Flexible(
-                      child: _buildSearchResultsList(productProvider),
-                    ),
+                    Flexible(child: _buildSearchResultsList(productProvider)),
                   ],
                 ),
               ),
@@ -605,7 +625,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
       ),
     );
   }
-  
+
   Widget _buildSearchResultsList(ProductProvider productProvider) {
     if (productProvider.isLoading) {
       return const SizedBox(
@@ -650,10 +670,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
               const SizedBox(height: 4),
               Text(
                 'Try a different search term',
-                style: TextStyle(
-                  color: Colors.grey.shade500,
-                  fontSize: 12,
-                ),
+                style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
               ),
             ],
           ),
@@ -668,7 +685,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
       itemBuilder: (context, index) {
         final product = _searchResults[index];
         final hasPrice = product.price != null;
-        
+
         return InkWell(
           onTap: hasPrice ? () => _addProductToInvoice(product) : null,
           child: Padding(
@@ -689,7 +706,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
                               width: 50,
                               height: 50,
                               color: Colors.grey.shade200,
-                              child: const Icon(Icons.shopping_bag, color: Colors.grey, size: 24),
+                              child: const Icon(
+                                Icons.shopping_bag,
+                                color: Colors.grey,
+                                size: 24,
+                              ),
                             );
                           },
                         )
@@ -697,7 +718,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
                           width: 50,
                           height: 50,
                           color: Colors.grey.shade200,
-                          child: const Icon(Icons.shopping_bag, color: Colors.grey, size: 24),
+                          child: const Icon(
+                            Icons.shopping_bag,
+                            color: Colors.grey,
+                            size: 24,
+                          ),
                         ),
                 ),
                 const SizedBox(width: 12),
@@ -736,7 +761,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       else
                         Container(
                           margin: const EdgeInsets.only(top: 2),
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.orange.shade50,
                             borderRadius: BorderRadius.circular(4),
@@ -755,9 +783,17 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 ),
                 // Add Icon
                 if (hasPrice)
-                  const Icon(Icons.add_circle, color: Colors.deepPurple, size: 24)
+                  const Icon(
+                    Icons.add_circle,
+                    color: Colors.deepPurple,
+                    size: 24,
+                  )
                 else
-                  const Icon(Icons.remove_circle_outline, color: Colors.grey, size: 24),
+                  const Icon(
+                    Icons.remove_circle_outline,
+                    color: Colors.grey,
+                    size: 24,
+                  ),
               ],
             ),
           ),
@@ -773,7 +809,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.shopping_cart_outlined, size: 64, color: Colors.grey.shade300),
+            Icon(
+              Icons.shopping_cart_outlined,
+              size: 64,
+              color: Colors.grey.shade300,
+            ),
             const SizedBox(height: 16),
             Text(
               'No items added',
@@ -786,10 +826,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
             const SizedBox(height: 8),
             Text(
               'Search and add products to create an invoice',
-              style: TextStyle(
-                color: Colors.grey.shade500,
-                fontSize: 13,
-              ),
+              style: TextStyle(color: Colors.grey.shade500, fontSize: 13),
               textAlign: TextAlign.center,
             ),
           ],
@@ -819,7 +856,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
           ),
           child: Row(
             children: [
-              const Icon(Icons.shopping_cart, color: Colors.deepPurple, size: 20),
+              const Icon(
+                Icons.shopping_cart,
+                color: Colors.deepPurple,
+                size: 20,
+              ),
               const SizedBox(width: 8),
               Text(
                 'Invoice Items (${_invoiceItems.length})',
@@ -837,131 +878,159 @@ class _OrdersScreenState extends State<OrdersScreen> {
               : ListView.builder(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   itemCount: _invoiceItems.length,
-            itemBuilder: (context, index) {
-              final item = _invoiceItems[index];
-              return Card(
-                margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Product name and delete button
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              item.productName,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                              ),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          InkWell(
-                            onTap: () => _removeItemFromInvoice(index),
-                            borderRadius: BorderRadius.circular(20),
-                            child: Container(
-                              padding: const EdgeInsets.all(4),
-                              child: const Icon(Icons.delete_outline, color: Colors.red, size: 20),
-                            ),
-                          ),
-                        ],
+                  itemBuilder: (context, index) {
+                    final item = _invoiceItems[index];
+                    return Card(
+                      margin: const EdgeInsets.symmetric(
+                        vertical: 4.0,
+                        horizontal: 8.0,
                       ),
-                      if (item.productSku != null) ...[
-                        const SizedBox(height: 4),
-                        Text(
-                          'SKU: ${item.productSku}',
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: Colors.grey.shade600,
-                          ),
-                        ),
-                      ],
-                      const SizedBox(height: 12),
-                      // Quantity and price row
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          // Quantity controls
-                          Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey.shade300),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Product name and delete button
+                            Row(
                               children: [
-                                InkWell(
-                                  onTap: () => _updateItemQuantity(
-                                    index,
-                                    item.quantity - 1,
-                                  ),
-                                  borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(20),
-                                    bottomLeft: Radius.circular(20),
-                                  ),
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                    child: const Icon(Icons.remove, size: 18, color: Colors.grey),
-                                  ),
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                                  decoration: BoxDecoration(
-                                    border: Border.symmetric(
-                                      vertical: BorderSide(color: Colors.grey.shade300),
-                                    ),
-                                  ),
+                                Expanded(
                                   child: Text(
-                                    '${item.quantity}',
+                                    item.productName,
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 14,
                                     ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
+                                const SizedBox(width: 8),
                                 InkWell(
-                                  onTap: () => _updateItemQuantity(
-                                    index,
-                                    item.quantity + 1,
-                                  ),
-                                  borderRadius: const BorderRadius.only(
-                                    topRight: Radius.circular(20),
-                                    bottomRight: Radius.circular(20),
-                                  ),
+                                  onTap: () => _removeItemFromInvoice(index),
+                                  borderRadius: BorderRadius.circular(20),
                                   child: Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                    child: const Icon(Icons.add, size: 18, color: Colors.grey),
+                                    padding: const EdgeInsets.all(4),
+                                    child: const Icon(
+                                      Icons.delete_outline,
+                                      color: Colors.red,
+                                      size: 20,
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                          // Price
-                          Flexible(
-                            child: Text(
-                              '\$${item.total.toStringAsFixed(2)}',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                                color: Colors.deepPurple,
+                            if (item.productSku != null) ...[
+                              const SizedBox(height: 4),
+                              Text(
+                                'SKU: ${item.productSku}',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: Colors.grey.shade600,
+                                ),
                               ),
-                              textAlign: TextAlign.right,
+                            ],
+                            const SizedBox(height: 12),
+                            // Quantity and price row
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                // Quantity controls
+                                Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.grey.shade300,
+                                    ),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      InkWell(
+                                        onTap: () => _updateItemQuantity(
+                                          index,
+                                          item.quantity - 1,
+                                        ),
+                                        borderRadius: const BorderRadius.only(
+                                          topLeft: Radius.circular(20),
+                                          bottomLeft: Radius.circular(20),
+                                        ),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                            vertical: 4,
+                                          ),
+                                          child: const Icon(
+                                            Icons.remove,
+                                            size: 18,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                          vertical: 4,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          border: Border.symmetric(
+                                            vertical: BorderSide(
+                                              color: Colors.grey.shade300,
+                                            ),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          '${item.quantity}',
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ),
+                                      InkWell(
+                                        onTap: () => _updateItemQuantity(
+                                          index,
+                                          item.quantity + 1,
+                                        ),
+                                        borderRadius: const BorderRadius.only(
+                                          topRight: Radius.circular(20),
+                                          bottomRight: Radius.circular(20),
+                                        ),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                            vertical: 4,
+                                          ),
+                                          child: const Icon(
+                                            Icons.add,
+                                            size: 18,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                // Price
+                                Flexible(
+                                  child: Text(
+                                    '\$${item.total.toStringAsFixed(2)}',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                      color: Colors.deepPurple,
+                                    ),
+                                    textAlign: TextAlign.right,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ],
-                  ),
+                    );
+                  },
                 ),
-              );
-            },
-          ),
         ),
       ],
     );
@@ -991,12 +1060,19 @@ class _OrderCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       elevation: 1,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
         onTap: () {
-          // Could navigate to order details
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => OrderDetailScreen(orderId: order.id),
+            ),
+          ).then((deleted) {
+            if (deleted == true && context.mounted) {
+              context.read<OrderProvider>().fetchOrders();
+            }
+          });
         },
         borderRadius: BorderRadius.circular(12),
         child: Padding(
@@ -1015,7 +1091,10 @@ class _OrderCard extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
                     decoration: BoxDecoration(
                       color: _getStatusColor(order.status).withOpacity(0.1),
                       borderRadius: BorderRadius.circular(20),
@@ -1037,10 +1116,7 @@ class _OrderCard extends StatelessWidget {
               const SizedBox(height: 12),
               Text(
                 '${order.items.length} item${order.items.length == 1 ? '' : 's'}',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey.shade600,
-                ),
+                style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
               ),
               const SizedBox(height: 8),
               Row(
@@ -1056,10 +1132,7 @@ class _OrderCard extends StatelessWidget {
                   ),
                   Text(
                     _formatDate(order.createdAt),
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey.shade600,
-                    ),
+                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
                   ),
                 ],
               ),
@@ -1074,4 +1147,3 @@ class _OrderCard extends StatelessWidget {
     return '${date.month}/${date.day}/${date.year}';
   }
 }
-

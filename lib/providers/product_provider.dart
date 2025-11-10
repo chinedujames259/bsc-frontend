@@ -100,5 +100,43 @@ class ProductProvider with ChangeNotifier {
       notifyListeners();
     }
   }
-}
 
+  Product? _currentProduct;
+  Product? get currentProduct => _currentProduct;
+
+  Future<void> fetchProductById(int id) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      _currentProduct = await _apiService.getProductById(id);
+    } catch (e) {
+      _error = e.toString().replaceAll('Exception: ', '');
+      _currentProduct = null;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> deleteProduct(int id) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      await _apiService.deleteProduct(id);
+      _products.removeWhere((product) => product.id == id);
+      if (_currentProduct?.id == id) {
+        _currentProduct = null;
+      }
+    } catch (e) {
+      _error = e.toString().replaceAll('Exception: ', '');
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+}

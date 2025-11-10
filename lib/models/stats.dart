@@ -2,10 +2,7 @@ class OrderStatusCount {
   final String status;
   final int count;
 
-  OrderStatusCount({
-    required this.status,
-    required this.count,
-  });
+  OrderStatusCount({required this.status, required this.count});
 
   factory OrderStatusCount.fromJson(Map<String, dynamic> json) {
     return OrderStatusCount(
@@ -31,9 +28,10 @@ class UserStats {
       totalProducts: json['totalProducts'] as int,
       totalCategories: json['totalCategories'] as int,
       ordersByStatus: (json['ordersByStatus'] as List)
-          .map((item) => OrderStatusCount.fromJson(item as Map<String, dynamic>))
+          .map(
+            (item) => OrderStatusCount.fromJson(item as Map<String, dynamic>),
+          )
           .toList(),
     );
   }
 }
-

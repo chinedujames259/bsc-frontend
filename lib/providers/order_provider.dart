@@ -50,6 +50,25 @@ class OrderProvider with ChangeNotifier {
     }
   }
 
+  Order? _currentOrder;
+  Order? get currentOrder => _currentOrder;
+
+  Future<void> fetchOrderById(int id) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      _currentOrder = await _apiService.getOrderById(id);
+    } catch (e) {
+      _error = e.toString().replaceAll('Exception: ', '');
+      _currentOrder = null;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
   Future<Order> getOrderById(int id) async {
     _isLoading = true;
     _error = null;
@@ -66,5 +85,47 @@ class OrderProvider with ChangeNotifier {
       notifyListeners();
     }
   }
-}
 
+  Future<void> updateOrderStatus(int id, String status) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      final updatedOrder = await _apiService.updateOrderStatus(id, status);
+      final index = _orders.indexWhere((order) => order.id == id);
+      if (index >= 0) {
+        _orders[index] = updatedOrder;
+      }
+      if (_currentOrder?.id == id) {
+        _currentOrder = updatedOrder;
+      }
+    } catch (e) {
+      _error = e.toString().replaceAll('Exception: ', '');
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> deleteOrder(int id) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      await _apiService.deleteOrder(id);
+      _orders.removeWhere((order) => order.id == id);
+      if (_currentOrder?.id == id) {
+        _currentOrder = null;
+      }
+    } catch (e) {
+      _error = e.toString().replaceAll('Exception: ', '');
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+}

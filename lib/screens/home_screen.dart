@@ -7,6 +7,9 @@ import '../providers/stats_provider.dart';
 import 'add_category_screen.dart';
 import 'add_product_screen.dart';
 import 'orders_screen.dart';
+import 'product_detail_screen.dart';
+import 'products_screen.dart';
+import 'categories_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -85,32 +88,19 @@ class _HomeScreenState extends State<HomeScreen> {
           ? null
           : AppBar(
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-              title: Text(
-                _selectedIndex == 1
-                    ? 'Search'
-                    : 'Profile',
-              ),
+              title: Text(_selectedIndex == 1 ? 'Search' : 'Profile'),
             ),
       body: _getCurrentPage(),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
           BottomNavigationBarItem(
             icon: Icon(Icons.receipt_long),
             label: 'Orders',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
@@ -118,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: _selectedIndex == 0
           ? FloatingActionButton(
               onPressed: () => _showAddOptions(context),
-              backgroundColor: Colors.deepPurple,
+              backgroundColor: Colors.tealAccent,
               child: const Icon(Icons.add, color: Colors.white),
             )
           : null,
@@ -253,7 +243,8 @@ class _HomePageState extends State<HomePage> {
               child: TextField(
                 controller: widget.searchController,
                 onSubmitted: (value) {
-                  if (value.trim().isNotEmpty && widget.onSearchSubmitted != null) {
+                  if (value.trim().isNotEmpty &&
+                      widget.onSearchSubmitted != null) {
                     widget.onSearchSubmitted!(value.trim());
                   }
                 },
@@ -290,7 +281,10 @@ class _HomePageState extends State<HomePage> {
                     borderRadius: BorderRadius.circular(16),
                     borderSide: BorderSide(color: Colors.deepPurple, width: 2),
                   ),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
                 ),
               ),
             ),
@@ -317,7 +311,14 @@ class _HomePageState extends State<HomePage> {
                   ),
                   if (categoryProvider.categories.isNotEmpty)
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const CategoriesScreen(),
+                          ),
+                        );
+                      },
                       style: TextButton.styleFrom(
                         padding: const EdgeInsets.symmetric(horizontal: 8),
                         minimumSize: Size.zero,
@@ -348,7 +349,11 @@ class _HomePageState extends State<HomePage> {
                 child: Center(
                   child: Column(
                     children: [
-                      Icon(Icons.category, size: 48, color: Colors.grey.shade400),
+                      Icon(
+                        Icons.category,
+                        size: 48,
+                        color: Colors.grey.shade400,
+                      ),
                       const SizedBox(height: 8),
                       Text(
                         'No categories yet',
@@ -395,10 +400,7 @@ class _HomePageState extends State<HomePage> {
                     ];
                     final color = colors[index % colors.length];
 
-                    return CategoryCard(
-                      label: category.name,
-                      color: color,
-                    );
+                    return CategoryCard(label: category.name, color: color);
                   },
                 ),
               ),
@@ -419,7 +421,14 @@ class _HomePageState extends State<HomePage> {
                   ),
                   if (productProvider.products.isNotEmpty)
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ProductsScreen(),
+                          ),
+                        );
+                      },
                       style: TextButton.styleFrom(
                         padding: const EdgeInsets.symmetric(horizontal: 8),
                         minimumSize: Size.zero,
@@ -450,7 +459,11 @@ class _HomePageState extends State<HomePage> {
                 child: Center(
                   child: Column(
                     children: [
-                      Icon(Icons.shopping_bag, size: 48, color: Colors.grey.shade400),
+                      Icon(
+                        Icons.shopping_bag,
+                        size: 48,
+                        color: Colors.grey.shade400,
+                      ),
                       const SizedBox(height: 8),
                       Text(
                         'No products yet',
@@ -487,13 +500,10 @@ class _HomePageState extends State<HomePage> {
                   crossAxisSpacing: 12,
                   mainAxisSpacing: 12,
                 ),
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final product = productProvider.products[index];
-                    return ProductCard(product: product);
-                  },
-                  childCount: productProvider.products.length,
-                ),
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final product = productProvider.products[index];
+                  return ProductCard(product: product);
+                }, childCount: productProvider.products.length),
               ),
             ),
           const SliverToBoxAdapter(child: SizedBox(height: 100)),
@@ -606,10 +616,7 @@ class _StatCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: color.withOpacity(0.08),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: color.withOpacity(0.2),
-          width: 1,
-        ),
+        border: Border.all(color: color.withOpacity(0.2), width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -668,10 +675,7 @@ class _CompactStatusChip extends StatelessWidget {
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: color.withOpacity(0.3),
-          width: 1,
-        ),
+        border: Border.all(color: color.withOpacity(0.3), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -713,11 +717,7 @@ class CategoryCard extends StatelessWidget {
   final String label;
   final Color color;
 
-  const CategoryCard({
-    super.key,
-    required this.label,
-    required this.color,
-  });
+  const CategoryCard({super.key, required this.label, required this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -731,10 +731,7 @@ class CategoryCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: color.withOpacity(0.1),
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(
-              color: color.withOpacity(0.25),
-              width: 1.5,
-            ),
+            border: Border.all(color: color.withOpacity(0.25), width: 1.5),
           ),
           child: Center(
             child: Text(
@@ -759,20 +756,26 @@ class CategoryCard extends StatelessWidget {
 class ProductCard extends StatelessWidget {
   final dynamic product;
 
-  const ProductCard({
-    super.key,
-    required this.product,
-  });
+  const ProductCard({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 1,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ProductDetailScreen(productId: product.id),
+            ),
+          ).then((deleted) {
+            if (deleted == true && context.mounted) {
+              context.read<ProductProvider>().fetchProducts();
+            }
+          });
+        },
         borderRadius: BorderRadius.circular(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -801,9 +804,10 @@ class ProductCard extends StatelessWidget {
                             return Center(
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                value: loadingProgress.expectedTotalBytes != null
+                                value:
+                                    loadingProgress.expectedTotalBytes != null
                                     ? loadingProgress.cumulativeBytesLoaded /
-                                        loadingProgress.expectedTotalBytes!
+                                          loadingProgress.expectedTotalBytes!
                                     : null,
                               ),
                             );
@@ -893,10 +897,7 @@ class ProductCard extends StatelessWidget {
 class SearchPage extends StatefulWidget {
   final String? initialQuery;
 
-  const SearchPage({
-    super.key,
-    this.initialQuery,
-  });
+  const SearchPage({super.key, this.initialQuery});
 
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -988,45 +989,39 @@ class _SearchPageState extends State<SearchPage> {
                     borderRadius: BorderRadius.circular(16),
                     borderSide: BorderSide(color: Colors.deepPurple, width: 2),
                   ),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
                 ),
               ),
             ),
-            Expanded(
-              child: _buildSearchResults(context, productProvider),
-            ),
+            Expanded(child: _buildSearchResults(context, productProvider)),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildSearchResults(BuildContext context, ProductProvider productProvider) {
+  Widget _buildSearchResults(
+    BuildContext context,
+    ProductProvider productProvider,
+  ) {
     if (!_hasSearched) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.search,
-              size: 80,
-              color: Colors.grey.shade300,
-            ),
+            Icon(Icons.search, size: 80, color: Colors.grey.shade300),
             const SizedBox(height: 16),
             Text(
               'Search for products',
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.grey.shade600,
-              ),
+              style: TextStyle(fontSize: 18, color: Colors.grey.shade600),
             ),
             const SizedBox(height: 8),
             Text(
               'Enter a product name, SKU, or description',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey.shade500,
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
             ),
           ],
         ),
@@ -1034,9 +1029,7 @@ class _SearchPageState extends State<SearchPage> {
     }
 
     if (productProvider.isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
 
     if (productProvider.error != null) {
@@ -1044,11 +1037,7 @@ class _SearchPageState extends State<SearchPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.error_outline,
-              size: 64,
-              color: Colors.red.shade300,
-            ),
+            Icon(Icons.error_outline, size: 64, color: Colors.red.shade300),
             const SizedBox(height: 16),
             Text(
               'Error searching products',
@@ -1061,10 +1050,7 @@ class _SearchPageState extends State<SearchPage> {
             const SizedBox(height: 8),
             Text(
               productProvider.error!,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey.shade600,
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
@@ -1082,11 +1068,7 @@ class _SearchPageState extends State<SearchPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.search_off,
-              size: 80,
-              color: Colors.grey.shade300,
-            ),
+            Icon(Icons.search_off, size: 80, color: Colors.grey.shade300),
             const SizedBox(height: 16),
             Text(
               'No products found',
@@ -1099,10 +1081,7 @@ class _SearchPageState extends State<SearchPage> {
             const SizedBox(height: 8),
             Text(
               'Try searching with different keywords',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey.shade500,
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
             ),
           ],
         ),
@@ -1119,10 +1098,7 @@ class _SearchPageState extends State<SearchPage> {
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                 child: Text(
                   'Found ${productProvider.products.length} result${productProvider.products.length == 1 ? '' : 's'} for "$_currentQuery"',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey.shade600,
-                  ),
+                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
                 ),
               ),
             ),
@@ -1135,13 +1111,10 @@ class _SearchPageState extends State<SearchPage> {
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
               ),
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  final product = productProvider.products[index];
-                  return ProductCard(product: product);
-                },
-                childCount: productProvider.products.length,
-              ),
+              delegate: SliverChildBuilderDelegate((context, index) {
+                final product = productProvider.products[index];
+                return ProductCard(product: product);
+              }, childCount: productProvider.products.length),
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 100)),
@@ -1175,18 +1148,12 @@ class ProfilePage extends StatelessWidget {
           const SizedBox(height: 24),
           Text(
             user?.name ?? 'Unknown',
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           Text(
             user?.email ?? '',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey.shade600,
-            ),
+            style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
           ),
           const SizedBox(height: 32),
           _buildProfileOption(
@@ -1199,13 +1166,25 @@ class ProfilePage extends StatelessWidget {
             context,
             icon: Icons.shopping_bag_outlined,
             title: 'My Products',
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ProductsScreen()),
+              );
+            },
           ),
           _buildProfileOption(
             context,
             icon: Icons.category_outlined,
             title: 'My Categories',
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const CategoriesScreen(),
+                ),
+              );
+            },
           ),
           _buildProfileOption(
             context,
@@ -1246,17 +1225,13 @@ class ProfilePage extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       elevation: 1,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ListTile(
         leading: Icon(icon, color: Colors.deepPurple),
         title: Text(title),
         trailing: const Icon(Icons.chevron_right),
         onTap: onTap,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }
