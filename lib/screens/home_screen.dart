@@ -4,6 +4,7 @@ import '../providers/auth_provider.dart';
 import '../providers/category_provider.dart';
 import '../providers/product_provider.dart';
 import '../providers/stats_provider.dart';
+import '../models/stats.dart';
 import 'add_category_screen.dart';
 import 'add_product_screen.dart';
 import 'orders_screen.dart';
@@ -108,8 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: _selectedIndex == 0
           ? FloatingActionButton(
               onPressed: () => _showAddOptions(context),
-              backgroundColor: Colors.tealAccent,
-              child: const Icon(Icons.add, color: Colors.white),
+              child: const Icon(Icons.add),
             )
           : null,
     );
@@ -124,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: const Icon(Icons.shopping_bag, color: Colors.deepPurple),
+              leading: const Icon(Icons.shopping_bag, color: Colors.teal),
               title: const Text('Add Product'),
               onTap: () async {
                 Navigator.pop(context);
@@ -140,7 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.category, color: Colors.deepPurple),
+              leading: const Icon(Icons.category, color: Colors.teal),
               title: const Text('Add Category'),
               onTap: () async {
                 Navigator.pop(context);
@@ -214,7 +214,6 @@ class _HomePageState extends State<HomePage> {
             expandedHeight: 100,
             floating: true,
             pinned: true,
-            backgroundColor: Colors.deepPurple,
             elevation: 0,
             flexibleSpace: FlexibleSpaceBar(
               titlePadding: const EdgeInsets.only(left: 16, bottom: 16),
@@ -231,7 +230,7 @@ class _HomePageState extends State<HomePage> {
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [Colors.deepPurple, Colors.deepPurple.shade300],
+                    colors: [Colors.teal, Colors.teal.shade300],
                   ),
                 ),
               ),
@@ -279,7 +278,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
-                    borderSide: BorderSide(color: Colors.deepPurple, width: 2),
+                    borderSide: BorderSide(color: Colors.teal, width: 2),
                   ),
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 16,
@@ -326,7 +325,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       child: const Text(
                         'See All',
-                        style: TextStyle(fontSize: 14),
+                        style: TextStyle(fontSize: 14, color: Colors.teal),
                       ),
                     ),
                 ],
@@ -436,7 +435,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       child: const Text(
                         'See All',
-                        style: TextStyle(fontSize: 14),
+                        style: TextStyle(fontSize: 14, color: Colors.teal),
                       ),
                     ),
                 ],
@@ -564,16 +563,73 @@ class _HomePageState extends State<HomePage> {
             ],
           ],
         ),
+        const SizedBox(height: 12),
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Colors.teal.withOpacity(0.08),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: Colors.teal.withOpacity(0.2), width: 1),
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: Colors.teal.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  '₦',
+                  style: TextStyle(fontSize: 20, color: Colors.teal),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '₦${stats.revenue.overallTotal.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.teal,
+                        height: 1.1,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      'Total Revenue',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey.shade600,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
         if (stats.ordersByStatus.isNotEmpty) ...[
           const SizedBox(height: 12),
           Wrap(
             spacing: 6,
             runSpacing: 6,
             children: stats.ordersByStatus.map((orderStatus) {
+              final revenue = _getRevenueForStatus(
+                stats.revenue,
+                orderStatus.status,
+              );
               return _CompactStatusChip(
                 status: orderStatus.status,
                 count: orderStatus.count,
                 color: _getStatusColor(orderStatus.status),
+                revenue: revenue,
               );
             }).toList(),
           ),
@@ -592,6 +648,19 @@ class _HomePageState extends State<HomePage> {
         return Colors.red;
       default:
         return Colors.grey;
+    }
+  }
+
+  double _getRevenueForStatus(RevenueStats revenue, String status) {
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return revenue.pendingTotal;
+      case 'completed':
+        return revenue.completedTotal;
+      case 'cancelled':
+        return revenue.cancelledTotal;
+      default:
+        return 0.0;
     }
   }
 }
@@ -661,11 +730,13 @@ class _CompactStatusChip extends StatelessWidget {
   final String status;
   final int count;
   final Color color;
+  final double revenue;
 
   const _CompactStatusChip({
     required this.status,
     required this.count,
     required this.color,
+    required this.revenue,
   });
 
   @override
@@ -699,12 +770,31 @@ class _CompactStatusChip extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 6),
-          Text(
-            status,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: Colors.grey.shade700,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  status,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey.shade700,
+                  ),
+                ),
+                if (revenue > 0) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    '₦${revenue.toStringAsFixed(2)}',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w500,
+                      color: color,
+                    ),
+                  ),
+                ],
+              ],
             ),
           ),
         ],
@@ -817,7 +907,7 @@ class ProductCard extends StatelessWidget {
                               child: Icon(
                                 Icons.shopping_bag,
                                 size: 48,
-                                color: Colors.deepPurple.shade200,
+                                color: Colors.teal.shade200,
                               ),
                             );
                           },
@@ -827,7 +917,7 @@ class ProductCard extends StatelessWidget {
                         child: Icon(
                           Icons.shopping_bag,
                           size: 48,
-                          color: Colors.deepPurple.shade200,
+                          color: Colors.teal.shade200,
                         ),
                       ),
               ),
@@ -868,13 +958,13 @@ class ProductCard extends StatelessWidget {
                               const SizedBox(height: 4),
                               Text(
                                 product.price != null
-                                    ? '\$${product.price}'
+                                    ? '₦${product.price}'
                                     : 'No price',
                                 style: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
                                   color: product.price != null
-                                      ? Colors.deepPurple
+                                      ? Colors.teal
                                       : Colors.grey.shade500,
                                 ),
                               ),
@@ -987,7 +1077,7 @@ class _SearchPageState extends State<SearchPage> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
-                    borderSide: BorderSide(color: Colors.deepPurple, width: 2),
+                    borderSide: BorderSide(color: Colors.transparent, width: 2),
                   ),
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 16,

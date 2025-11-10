@@ -28,8 +28,13 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'BSC App',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
           useMaterial3: true,
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Colors.teal,
+            foregroundColor: Colors.white,
+            elevation: 0,
+          ),
         ),
         home: const AuthWrapper(),
         debugShowCheckedModeBanner: false,
@@ -58,15 +63,13 @@ class _AuthWrapperState extends State<AuthWrapper> {
   Widget build(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
 
-    print('AuthWrapper: isLoading=${authProvider.isLoading}, isAuthenticated=${authProvider.isAuthenticated}');
+    print(
+      'AuthWrapper: isLoading=${authProvider.isLoading}, isAuthenticated=${authProvider.isAuthenticated}',
+    );
 
     if (authProvider.isLoading) {
       print('AuthWrapper: Showing loading screen');
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     if (authProvider.isAuthenticated) {

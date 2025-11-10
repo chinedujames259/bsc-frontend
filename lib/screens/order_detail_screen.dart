@@ -148,8 +148,6 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Order Details'),
-        backgroundColor: Colors.deepPurple,
-        foregroundColor: Colors.white,
         actions: [
           if (order != null) ...[
             IconButton(
@@ -455,11 +453,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '\$${item.price}',
+                      '₦${item.price}',
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Colors.deepPurple,
+                        color: Colors.teal,
                       ),
                     ),
                   ],
@@ -470,7 +468,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.deepPurple.withOpacity(0.1),
+                color: Colors.teal.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
@@ -481,11 +479,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                   ),
                   Text(
-                    '\$${(double.tryParse(item.price) ?? 0.0) * item.quantity}',
+                    '₦${(double.tryParse(item.price) ?? 0.0) * item.quantity}',
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Colors.deepPurple,
+                      color: Colors.teal,
                     ),
                   ),
                 ],
@@ -501,9 +499,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.deepPurple.withOpacity(0.1),
+        color: Colors.teal.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.deepPurple.withOpacity(0.3), width: 2),
+        border: Border.all(color: Colors.teal.withOpacity(0.3), width: 2),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -513,11 +511,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           Text(
-            '\$${order.total}',
+            '₦${order.total}',
             style: const TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
-              color: Colors.deepPurple,
+              color: Colors.teal,
             ),
           ),
         ],

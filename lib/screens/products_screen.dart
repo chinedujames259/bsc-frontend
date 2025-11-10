@@ -24,11 +24,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
     final productProvider = context.watch<ProductProvider>();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('All Products'),
-        backgroundColor: Colors.deepPurple,
-        foregroundColor: Colors.white,
-      ),
+      appBar: AppBar(title: const Text('All Products')),
       body: RefreshIndicator(
         onRefresh: () => productProvider.fetchProducts(),
         child: _buildBody(context, productProvider),
@@ -38,9 +34,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   Widget _buildBody(BuildContext context, ProductProvider productProvider) {
     if (productProvider.isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
 
     if (productProvider.error != null) {
@@ -48,11 +42,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.error_outline,
-              size: 64,
-              color: Colors.red.shade300,
-            ),
+            Icon(Icons.error_outline, size: 64, color: Colors.red.shade300),
             const SizedBox(height: 16),
             Text(
               'Error loading products',
@@ -83,11 +73,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.shopping_bag,
-              size: 64,
-              color: Colors.grey.shade300,
-            ),
+            Icon(Icons.shopping_bag, size: 64, color: Colors.grey.shade300),
             const SizedBox(height: 16),
             Text(
               'No products yet',
@@ -100,10 +86,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
             const SizedBox(height: 8),
             Text(
               'Add your first product to get started',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey.shade500,
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
             ),
           ],
         ),
@@ -121,13 +104,10 @@ class _ProductsScreenState extends State<ProductsScreen> {
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
             ),
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                final product = productProvider.products[index];
-                return _ProductCard(product: product);
-              },
-              childCount: productProvider.products.length,
-            ),
+            delegate: SliverChildBuilderDelegate((context, index) {
+              final product = productProvider.products[index];
+              return _ProductCard(product: product);
+            }, childCount: productProvider.products.length),
           ),
         ),
         const SliverToBoxAdapter(child: SizedBox(height: 100)),
@@ -145,17 +125,13 @@ class _ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 1,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: InkWell(
         onTap: () {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ProductDetailScreen(
-                productId: product.id,
-              ),
+              builder: (context) => ProductDetailScreen(productId: product.id),
             ),
           ).then((deleted) {
             if (deleted == true && context.mounted) {
@@ -191,10 +167,10 @@ class _ProductCard extends StatelessWidget {
                             return Center(
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                value: loadingProgress.expectedTotalBytes !=
-                                        null
+                                value:
+                                    loadingProgress.expectedTotalBytes != null
                                     ? loadingProgress.cumulativeBytesLoaded /
-                                        loadingProgress.expectedTotalBytes!
+                                          loadingProgress.expectedTotalBytes!
                                     : null,
                               ),
                             );
@@ -204,7 +180,7 @@ class _ProductCard extends StatelessWidget {
                               child: Icon(
                                 Icons.shopping_bag,
                                 size: 48,
-                                color: Colors.deepPurple.shade200,
+                                color: Colors.teal.shade200,
                               ),
                             );
                           },
@@ -214,7 +190,7 @@ class _ProductCard extends StatelessWidget {
                         child: Icon(
                           Icons.shopping_bag,
                           size: 48,
-                          color: Colors.deepPurple.shade200,
+                          color: Colors.tealAccent.shade200,
                         ),
                       ),
               ),
@@ -255,13 +231,13 @@ class _ProductCard extends StatelessWidget {
                               const SizedBox(height: 4),
                               Text(
                                 product.price != null
-                                    ? '\$${product.price}'
+                                    ? '₦${product.price}'
                                     : 'No price',
                                 style: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
                                   color: product.price != null
-                                      ? Colors.deepPurple
+                                      ? Colors.teal
                                       : Colors.grey.shade500,
                                 ),
                               ),
@@ -280,4 +256,3 @@ class _ProductCard extends StatelessWidget {
     );
   }
 }
-

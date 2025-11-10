@@ -26,9 +26,9 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
 
     try {
       await categoryProvider.createCategory(_nameController.text.trim());
-      
+
       if (!mounted) return;
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Category created successfully!'),
@@ -38,13 +38,11 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
       Navigator.of(context).pop(true);
     } catch (e) {
       if (!mounted) return;
-      
-      final errorMessage = categoryProvider.error ?? 'Failed to create category';
+
+      final errorMessage =
+          categoryProvider.error ?? 'Failed to create category';
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(errorMessage),
-          backgroundColor: Colors.red,
-        ),
+        SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
       );
     }
   }
@@ -54,11 +52,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
     final categoryProvider = context.watch<CategoryProvider>();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Add Category'),
-        backgroundColor: Colors.deepPurple,
-        foregroundColor: Colors.white,
-      ),
+      appBar: AppBar(title: const Text('Add Category')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -89,16 +83,16 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
                 onPressed: categoryProvider.isLoading ? null : _saveCategory,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  backgroundColor: Colors.deepPurple,
-                  foregroundColor: Colors.white,
                 ),
                 child: categoryProvider.isLoading
-                    ? const SizedBox(
+                    ? SizedBox(
                         height: 20,
                         width: 20,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Theme.of(context).colorScheme.onPrimary,
+                          ),
                         ),
                       )
                     : const Text(
@@ -113,4 +107,3 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
     );
   }
 }
-

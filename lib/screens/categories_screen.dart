@@ -23,11 +23,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     final categoryProvider = context.watch<CategoryProvider>();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('All Categories'),
-        backgroundColor: Colors.deepPurple,
-        foregroundColor: Colors.white,
-      ),
+      appBar: AppBar(title: const Text('All Categories')),
       body: RefreshIndicator(
         onRefresh: () => categoryProvider.fetchCategories(),
         child: _buildBody(context, categoryProvider),
@@ -37,9 +33,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
   Widget _buildBody(BuildContext context, CategoryProvider categoryProvider) {
     if (categoryProvider.isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
 
     if (categoryProvider.error != null) {
@@ -47,11 +41,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.error_outline,
-              size: 64,
-              color: Colors.red.shade300,
-            ),
+            Icon(Icons.error_outline, size: 64, color: Colors.red.shade300),
             const SizedBox(height: 16),
             Text(
               'Error loading categories',
@@ -82,11 +72,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.category,
-              size: 64,
-              color: Colors.grey.shade300,
-            ),
+            Icon(Icons.category, size: 64, color: Colors.grey.shade300),
             const SizedBox(height: 16),
             Text(
               'No categories yet',
@@ -99,10 +85,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             const SizedBox(height: 8),
             Text(
               'Add your first category to get started',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey.shade500,
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
             ),
           ],
         ),
@@ -141,35 +124,19 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               decoration: BoxDecoration(
                 color: color.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: color.withOpacity(0.3),
-                  width: 1.5,
-                ),
+                border: Border.all(color: color.withOpacity(0.3), width: 1.5),
               ),
-              child: Icon(
-                Icons.category,
-                color: color,
-                size: 24,
-              ),
+              child: Icon(Icons.category, color: color, size: 24),
             ),
             title: Text(
               category.name,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
             subtitle: Text(
               'Created: ${_formatDate(category.createdAt)}',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey.shade600,
-              ),
+              style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
             ),
-            trailing: Icon(
-              Icons.chevron_right,
-              color: Colors.grey.shade400,
-            ),
+            trailing: Icon(Icons.chevron_right, color: Colors.grey.shade400),
           ),
         );
       },
@@ -180,4 +147,3 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
   }
 }
-

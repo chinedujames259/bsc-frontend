@@ -12,15 +12,40 @@ class OrderStatusCount {
   }
 }
 
+class RevenueStats {
+  final double overallTotal;
+  final double pendingTotal;
+  final double completedTotal;
+  final double cancelledTotal;
+
+  RevenueStats({
+    required this.overallTotal,
+    required this.pendingTotal,
+    required this.completedTotal,
+    required this.cancelledTotal,
+  });
+
+  factory RevenueStats.fromJson(Map<String, dynamic> json) {
+    return RevenueStats(
+      overallTotal: (json['overallTotal'] as num).toDouble(),
+      pendingTotal: (json['pendingTotal'] as num).toDouble(),
+      completedTotal: (json['completedTotal'] as num).toDouble(),
+      cancelledTotal: (json['cancelledTotal'] as num).toDouble(),
+    );
+  }
+}
+
 class UserStats {
   final int totalProducts;
   final int totalCategories;
   final List<OrderStatusCount> ordersByStatus;
+  final RevenueStats revenue;
 
   UserStats({
     required this.totalProducts,
     required this.totalCategories,
     required this.ordersByStatus,
+    required this.revenue,
   });
 
   factory UserStats.fromJson(Map<String, dynamic> json) {
@@ -32,6 +57,7 @@ class UserStats {
             (item) => OrderStatusCount.fromJson(item as Map<String, dynamic>),
           )
           .toList(),
+      revenue: RevenueStats.fromJson(json['revenue'] as Map<String, dynamic>),
     );
   }
 }

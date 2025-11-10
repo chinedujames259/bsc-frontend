@@ -41,7 +41,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       );
 
       if (!mounted) return;
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Account created successfully! Please sign in.'),
@@ -51,13 +51,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
       Navigator.of(context).pop();
     } catch (e) {
       if (!mounted) return;
-      
+
       final errorMessage = authProvider.error ?? 'Sign up failed';
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(errorMessage),
-          backgroundColor: Colors.red,
-        ),
+        SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
       );
     }
   }
@@ -67,9 +64,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final authProvider = context.watch<AuthProvider>();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sign Up'),
-      ),
+      appBar: AppBar(title: const Text('Sign Up')),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -83,22 +78,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   const Icon(
                     Icons.person_add_outlined,
                     size: 80,
-                    color: Colors.deepPurple,
+                    color: Colors.teal,
                   ),
                   const SizedBox(height: 24),
                   Text(
                     'Create Account',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                      fontWeight: FontWeight.bold,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8),
                   Text(
                     'Sign up to get started',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.grey,
-                        ),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 32),
@@ -205,23 +200,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     onPressed: authProvider.isLoading ? null : _signUp,
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
-                      backgroundColor: Colors.deepPurple,
-                      foregroundColor: Colors.white,
                     ),
                     child: authProvider.isLoading
-                        ? const SizedBox(
+                        ? SizedBox(
                             height: 20,
                             width: 20,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Theme.of(context).colorScheme.onPrimary,
+                              ),
                             ),
                           )
-                        : const Text(
-                            'Sign Up',
-                            style: TextStyle(fontSize: 16),
-                          ),
+                        : const Text('Sign Up', style: TextStyle(fontSize: 16)),
                   ),
                 ],
               ),
@@ -232,4 +223,3 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 }
-

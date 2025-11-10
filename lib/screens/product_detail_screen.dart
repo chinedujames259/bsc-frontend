@@ -79,8 +79,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Product Details'),
-        backgroundColor: Colors.deepPurple,
-        foregroundColor: Colors.white,
         actions: [
           if (product != null)
             IconButton(
@@ -196,7 +194,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   child: Icon(
                     Icons.shopping_bag,
                     size: 80,
-                    color: Colors.deepPurple.shade200,
+                    color: Colors.teal.shade200,
                   ),
                 );
               },
@@ -205,7 +203,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               child: Icon(
                 Icons.shopping_bag,
                 size: 80,
-                color: Colors.deepPurple.shade200,
+                color: Colors.teal.shade200,
               ),
             ),
     );
@@ -225,14 +223,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: Colors.deepPurple.withOpacity(0.1),
+                color: Colors.teal.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
                 'SKU: ${product.sku}',
                 style: TextStyle(
                   fontSize: 14,
-                  color: Colors.deepPurple.shade700,
+                  color: Colors.teal.shade700,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -252,12 +250,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  product.price != null ? '\$${product.price}' : 'No price',
+                  product.price != null ? '₦${product.price}' : 'No price',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                     color: product.price != null
-                        ? Colors.deepPurple
+                        ? Colors.teal
                         : Colors.grey.shade500,
                   ),
                 ),
@@ -411,9 +409,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
-                    color: image.isPrimary
-                        ? Colors.deepPurple
-                        : Colors.grey.shade300,
+                    color: image.isPrimary ? Colors.teal : Colors.grey.shade300,
                     width: image.isPrimary ? 2 : 1,
                   ),
                 ),
@@ -456,7 +452,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               vertical: 2,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.deepPurple,
+                              color: Colors.teal,
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: const Text(

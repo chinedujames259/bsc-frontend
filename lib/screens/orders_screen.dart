@@ -322,9 +322,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _startCreatingInvoice,
-        backgroundColor: Colors.deepPurple,
-        icon: const Icon(Icons.add, color: Colors.white),
-        label: const Text('New Invoice', style: TextStyle(color: Colors.white)),
+        icon: const Icon(Icons.add),
+        label: const Text('New Invoice'),
       ),
     );
   }
@@ -340,7 +339,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
               Container(
                 padding: const EdgeInsets.only(top: 8.0),
                 decoration: BoxDecoration(
-                  color: Colors.deepPurple,
+                  color: Colors.teal,
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.1),
@@ -425,7 +424,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: const BorderSide(
-                        color: Colors.deepPurple,
+                        color: Colors.teal,
                         width: 2,
                       ),
                     ),
@@ -469,7 +468,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                           style: const TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
-                            color: Colors.deepPurple,
+                            color: Colors.teal,
                           ),
                         ),
                       ],
@@ -482,8 +481,6 @@ class _OrdersScreenState extends State<OrdersScreen> {
                             ? null
                             : _submitOrder,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.deepPurple,
-                          foregroundColor: Colors.white,
                           disabledBackgroundColor: Colors.grey.shade300,
                           disabledForegroundColor: Colors.grey.shade600,
                           padding: const EdgeInsets.symmetric(vertical: 16),
@@ -588,7 +585,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                         children: [
                           const Icon(
                             Icons.search,
-                            color: Colors.deepPurple,
+                            color: Colors.teal,
                             size: 20,
                           ),
                           const SizedBox(width: 8),
@@ -751,11 +748,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       ),
                       if (hasPrice)
                         Text(
-                          '\$${product.price}',
+                          '\$₦{product.price}',
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
-                            color: Colors.deepPurple,
+                            color: Colors.teal,
                           ),
                         )
                       else
@@ -783,11 +780,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 ),
                 // Add Icon
                 if (hasPrice)
-                  const Icon(
-                    Icons.add_circle,
-                    color: Colors.deepPurple,
-                    size: 24,
-                  )
+                  const Icon(Icons.add_circle, color: Colors.teal, size: 24)
                 else
                   const Icon(
                     Icons.remove_circle_outline,
@@ -856,11 +849,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
           ),
           child: Row(
             children: [
-              const Icon(
-                Icons.shopping_cart,
-                color: Colors.deepPurple,
-                size: 20,
-              ),
+              const Icon(Icons.shopping_cart, color: Colors.teal, size: 20),
               const SizedBox(width: 8),
               Text(
                 'Invoice Items (${_invoiceItems.length})',
@@ -1014,11 +1003,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                 // Price
                                 Flexible(
                                   child: Text(
-                                    '\$${item.total.toStringAsFixed(2)}',
+                                    '\₦${item.total.toStringAsFixed(2)}',
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16,
-                                      color: Colors.deepPurple,
+                                      color: Colors.teal,
                                     ),
                                     textAlign: TextAlign.right,
                                   ),
@@ -1123,11 +1112,11 @@ class _OrderCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Total: \$${order.total}',
+                    'Total: ₦${order.total}',
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Colors.deepPurple,
+                      color: Colors.teal,
                     ),
                   ),
                   Text(

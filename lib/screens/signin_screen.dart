@@ -38,8 +38,9 @@ class _SignInScreenState extends State<SignInScreen> {
     } catch (e) {
       print('SignInScreen: Sign in failed with error: $e');
       if (!mounted) return;
-      
-      final errorMessage = authProvider.error ?? e.toString().replaceAll('Exception: ', '');
+
+      final errorMessage =
+          authProvider.error ?? e.toString().replaceAll('Exception: ', '');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(errorMessage),
@@ -65,25 +66,21 @@ class _SignInScreenState extends State<SignInScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Icon(
-                    Icons.lock_outline,
-                    size: 80,
-                    color: Colors.deepPurple,
-                  ),
+                  const Icon(Icons.lock_outline, size: 80, color: Colors.teal),
                   const SizedBox(height: 24),
                   Text(
                     'Welcome Back',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                      fontWeight: FontWeight.bold,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8),
                   Text(
                     'Sign in to continue',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.grey,
-                        ),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 32),
@@ -141,23 +138,19 @@ class _SignInScreenState extends State<SignInScreen> {
                     onPressed: authProvider.isLoading ? null : _signIn,
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
-                      backgroundColor: Colors.deepPurple,
-                      foregroundColor: Colors.white,
                     ),
                     child: authProvider.isLoading
-                        ? const SizedBox(
+                        ? SizedBox(
                             height: 20,
                             width: 20,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Theme.of(context).colorScheme.onPrimary,
+                              ),
                             ),
                           )
-                        : const Text(
-                            'Sign In',
-                            style: TextStyle(fontSize: 16),
-                          ),
+                        : const Text('Sign In', style: TextStyle(fontSize: 16)),
                   ),
                   const SizedBox(height: 16),
                   Row(
@@ -185,4 +178,3 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 }
-

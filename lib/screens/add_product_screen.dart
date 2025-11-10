@@ -54,7 +54,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   String _generateSku(String name) {
     final cleanName = name.toUpperCase().replaceAll(RegExp(r'[^A-Z0-9]+'), '');
-    final timestamp = DateTime.now().millisecondsSinceEpoch.toString().substring(8);
+    final timestamp = DateTime.now().millisecondsSinceEpoch
+        .toString()
+        .substring(8);
     return '$cleanName-$timestamp';
   }
 
@@ -94,14 +96,14 @@ class _AddProductScreenState extends State<AddProductScreen> {
         name: name,
         slug: _generateSlug(name),
         sku: _skuController.text.trim(),
-        description: _descriptionController.text.trim().isEmpty 
-            ? null 
+        description: _descriptionController.text.trim().isEmpty
+            ? null
             : _descriptionController.text.trim(),
-        price: _priceController.text.trim().isEmpty 
-            ? null 
+        price: _priceController.text.trim().isEmpty
+            ? null
             : _priceController.text.trim(),
-        stockCount: _stockController.text.trim().isEmpty 
-            ? 0 
+        stockCount: _stockController.text.trim().isEmpty
+            ? 0
             : int.tryParse(_stockController.text.trim()),
         categoryId: _selectedCategoryId,
         imagePaths: _selectedImages.map((img) => img.path).toList(),
@@ -121,10 +123,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
       final errorMessage = productProvider.error ?? 'Failed to create product';
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(errorMessage),
-          backgroundColor: Colors.red,
-        ),
+        SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
       );
     }
   }
@@ -135,11 +134,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
     final categoryProvider = context.watch<CategoryProvider>();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Add Product'),
-        backgroundColor: Colors.deepPurple,
-        foregroundColor: Colors.white,
-      ),
+      appBar: AppBar(title: const Text('Add Product')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -182,11 +177,20 @@ class _AddProductScreenState extends State<AddProductScreen> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _priceController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Price',
                   hintText: 'e.g., 29.99',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.attach_money),
+                  border: const OutlineInputBorder(),
+                  prefixIcon: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Text(
+                      '₦',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Theme.of(context).iconTheme.color,
+                      ),
+                    ),
+                  ),
                 ),
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
               ),
@@ -244,18 +248,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 children: [
                   const Text(
                     'Product Images',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(width: 8),
                   Text(
                     '(${_selectedImages.length} selected)',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey.shade600,
-                    ),
+                    style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
                   ),
                 ],
               ),
@@ -277,7 +275,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
                               borderRadius: BorderRadius.circular(8),
                               border: Border.all(color: Colors.grey.shade300),
                               image: DecorationImage(
-                                image: FileImage(File(_selectedImages[index].path)),
+                                image: FileImage(
+                                  File(_selectedImages[index].path),
+                                ),
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -311,7 +311,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                   vertical: 4,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Colors.deepPurple,
+                                  color: Colors.teal,
                                   borderRadius: BorderRadius.circular(4),
                                 ),
                                 child: const Text(
@@ -333,10 +333,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
               OutlinedButton.icon(
                 onPressed: _pickImages,
                 icon: const Icon(Icons.add_photo_alternate),
-                label: Text(_selectedImages.isEmpty ? 'Add Images' : 'Add More Images'),
+                label: Text(
+                  _selectedImages.isEmpty ? 'Add Images' : 'Add More Images',
+                ),
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  side: BorderSide(color: Colors.deepPurple.shade200),
+                  side: BorderSide(color: Colors.teal.shade200),
                 ),
               ),
               const SizedBox(height: 24),
@@ -344,16 +346,16 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 onPressed: productProvider.isLoading ? null : _saveProduct,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  backgroundColor: Colors.deepPurple,
-                  foregroundColor: Colors.white,
                 ),
                 child: productProvider.isLoading
-                    ? const SizedBox(
+                    ? SizedBox(
                         height: 20,
                         width: 20,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Theme.of(context).colorScheme.onPrimary,
+                          ),
                         ),
                       )
                     : const Text(
@@ -368,4 +370,3 @@ class _AddProductScreenState extends State<AddProductScreen> {
     );
   }
 }
-
