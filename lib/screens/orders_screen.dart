@@ -748,7 +748,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       ),
                       if (hasPrice)
                         Text(
-                          '\$₦{product.price}',
+                          '₦${product.price}',
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
@@ -1035,6 +1035,8 @@ class _OrderCard extends StatelessWidget {
     switch (status.toLowerCase()) {
       case 'pending':
         return Colors.orange;
+      case 'shipped':
+        return Colors.blue;
       case 'completed':
         return Colors.green;
       case 'cancelled':

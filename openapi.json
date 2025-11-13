@@ -1421,7 +1421,7 @@
       },
       "get": {
         "summary": "Get user's products",
-        "description": "Retrieves a paginated list of products for the authenticated user. Requires JWT token.",
+        "description": "Retrieves a paginated list of products for the authenticated user. Supports filtering by stock status (in_stock, out_of_stock, low_stock) and ordering by createdAt, stockCount, name, or price. Requires JWT token.",
         "tags": [
           "products"
         ],
@@ -1464,6 +1464,65 @@
                   "type": "string"
                 }
               ]
+            }
+          },
+          {
+            "name": "stockStatus",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "description": "Filter products by stock status",
+              "examples": [
+                "in_stock",
+                "out_of_stock",
+                "low_stock"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "lowStockThreshold",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "description": "Threshold for low stock filter (default: 10)",
+              "examples": [10],
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "description": "Field to order by",
+              "examples": [
+                "createdAt",
+                "stockCount",
+                "name",
+                "price"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "orderDirection",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "description": "Order direction",
+              "examples": [
+                "asc",
+                "desc"
+              ],
+              "type": "string"
             }
           }
         ],
@@ -3841,7 +3900,7 @@
       },
       "get": {
         "summary": "Get user's orders",
-        "description": "Retrieves a paginated list of orders for the authenticated user. Requires JWT token.",
+        "description": "Retrieves a paginated list of orders for the authenticated user. Supports filtering by status and ordering by createdAt, status, or total. Requires JWT token.",
         "tags": [
           "orders"
         ],
@@ -3884,6 +3943,48 @@
                   "type": "string"
                 }
               ]
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "description": "Filter orders by status",
+              "examples": [
+                "pending",
+                "approved",
+                "completed",
+                "cancelled"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "description": "Field to order by",
+              "examples": [
+                "createdAt",
+                "status",
+                "total"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "orderDirection",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "description": "Order direction",
+              "examples": [
+                "asc",
+                "desc"
+              ],
+              "type": "string"
             }
           }
         ],
@@ -4347,6 +4448,7 @@
                     "description": "New order status",
                     "examples": [
                       "pending",
+                      "approved",
                       "completed",
                       "cancelled"
                     ],
@@ -4366,6 +4468,7 @@
                     "description": "New order status",
                     "examples": [
                       "pending",
+                      "approved",
                       "completed",
                       "cancelled"
                     ],
@@ -4385,6 +4488,7 @@
                     "description": "New order status",
                     "examples": [
                       "pending",
+                      "approved",
                       "completed",
                       "cancelled"
                     ],
@@ -4614,6 +4718,222 @@
               "application/json": {
                 "schema": {
                   "description": "Order not found",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Internal server error",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/products/{id}/stock": {
+      "patch": {
+        "summary": "Update product stock count",
+        "description": "Manually increases or decreases the stock count of a specific product. The product must belong to the authenticated user. Requires JWT token.",
+        "tags": [
+          "products"
+        ],
+        "operationId": "updateProductStock",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "description": "Product ID",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "action": {
+                    "description": "Action to perform on stock",
+                    "examples": [
+                      "increase",
+                      "decrease"
+                    ],
+                    "type": "string"
+                  },
+                  "amount": {
+                    "description": "Amount to increase or decrease",
+                    "minimum": 1,
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "action",
+                  "amount"
+                ]
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "action": {
+                    "description": "Action to perform on stock",
+                    "examples": [
+                      "increase",
+                      "decrease"
+                    ],
+                    "type": "string"
+                  },
+                  "amount": {
+                    "description": "Amount to increase or decrease",
+                    "minimum": 1,
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "action",
+                  "amount"
+                ]
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "action": {
+                    "description": "Action to perform on stock",
+                    "examples": [
+                      "increase",
+                      "decrease"
+                    ],
+                    "type": "string"
+                  },
+                  "amount": {
+                    "description": "Amount to increase or decrease",
+                    "minimum": 1,
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "action",
+                  "amount"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Stock count updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Stock count updated successfully",
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    },
+                    "stockCount": {
+                      "type": "number"
+                    },
+                    "previousStockCount": {
+                      "type": "number"
+                    },
+                    "action": {
+                      "type": "string"
+                    },
+                    "amount": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "stockCount",
+                    "previousStockCount",
+                    "action",
+                    "amount"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - Invalid action or amount",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Bad request - Invalid action or amount",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing JWT token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Unauthorized - Invalid or missing JWT token",
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Product not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Product not found",
                   "type": "object",
                   "properties": {
                     "message": {

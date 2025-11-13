@@ -145,10 +145,23 @@ class ApiService {
   Future<Map<String, dynamic>> getProducts({
     int page = 1,
     int limit = 10,
+    String? stockStatus,
+    int? lowStockThreshold,
+    String? orderBy,
+    String? orderDirection,
   }) async {
-    final url = Uri.parse(
-      '${AppConfig.baseUrl}/products?page=$page&limit=$limit',
-    );
+    final queryParams = <String, String>{
+      'page': page.toString(),
+      'limit': limit.toString(),
+      if (stockStatus != null && stockStatus.isNotEmpty) 'stockStatus': stockStatus,
+      if (lowStockThreshold != null) 'lowStockThreshold': lowStockThreshold.toString(),
+      if (orderBy != null && orderBy.isNotEmpty) 'orderBy': orderBy,
+      if (orderDirection != null && orderDirection.isNotEmpty)
+        'orderDirection': orderDirection,
+    };
+
+    final url = Uri.parse('${AppConfig.baseUrl}/products')
+        .replace(queryParameters: queryParams);
 
     final response = await http.get(
       url,
@@ -165,6 +178,27 @@ class ApiService {
     } else {
       final error = jsonDecode(response.body);
       throw Exception(error['message'] ?? 'Failed to fetch products');
+    }
+  }
+
+  Future<Map<String, dynamic>> updateProductStock({
+    required int id,
+    required String action,
+    required int amount,
+  }) async {
+    final url = Uri.parse('${AppConfig.baseUrl}/products/$id/stock');
+
+    final response = await http.patch(
+      url,
+      headers: await _getHeaders(includeAuth: true),
+      body: jsonEncode({'action': action, 'amount': amount}),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body) as Map<String, dynamic>;
+    } else {
+      final error = jsonDecode(response.body);
+      throw Exception(error['message'] ?? 'Failed to update product stock');
     }
   }
 

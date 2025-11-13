@@ -71,6 +71,110 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     }
   }
 
+  Future<void> _handleAdjustStock({required bool increase}) async {
+    final productProvider = context.read<ProductProvider>();
+    final product = productProvider.currentProduct;
+    if (product == null) return;
+
+    final amount = await _showStockAdjustDialog(
+      increase: increase,
+      currentStock: product.stockCount,
+    );
+
+    if (amount == null || !mounted) return;
+
+    try {
+      final result = await productProvider.adjustProductStock(
+        productId: product.id,
+        increase: increase,
+        amount: amount,
+      );
+
+      if (!mounted) return;
+
+      int _parseInt(dynamic value, int fallback) {
+        if (value is num) return value.toInt();
+        return int.tryParse(value?.toString() ?? '') ?? fallback;
+      }
+
+      final newStock = _parseInt(
+        result['stockCount'],
+        productProvider.currentProduct?.stockCount ?? product.stockCount,
+      );
+      final previousStock = _parseInt(
+        result['previousStockCount'],
+        product.stockCount,
+      );
+
+      final message = increase
+          ? 'Stock increased from $previousStock to $newStock'
+          : 'Stock decreased from $previousStock to $newStock';
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message), backgroundColor: Colors.teal),
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      final errorMessage =
+          productProvider.error ?? 'Failed to update product stock';
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
+      );
+    }
+  }
+
+  Future<int?> _showStockAdjustDialog({
+    required bool increase,
+    required int currentStock,
+  }) async {
+    final controller = TextEditingController(text: '1');
+    final formKey = GlobalKey<FormState>();
+
+    return showDialog<int>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(increase ? 'Increase Stock' : 'Reduce Stock'),
+        content: Form(
+          key: formKey,
+          child: TextFormField(
+            controller: controller,
+            autofocus: true,
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(
+              labelText: 'Amount',
+              border: OutlineInputBorder(),
+            ),
+            validator: (value) {
+              final amount = int.tryParse(value ?? '');
+              if (amount == null || amount <= 0) {
+                return 'Enter a positive number';
+              }
+              if (!increase && amount > currentStock) {
+                return 'Cannot reduce below zero';
+              }
+              return null;
+            },
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (formKey.currentState?.validate() != true) return;
+              final amount = int.parse(controller.text);
+              Navigator.pop(context, amount);
+            },
+            child: const Text('Apply'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final productProvider = context.watch<ProductProvider>();
@@ -151,7 +255,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildHeaderSection(product),
+                  _buildHeaderSection(product, productProvider.isStockUpdating),
                   const SizedBox(height: 24),
                   _buildDetailsSection(product),
                   const SizedBox(height: 24),
@@ -209,7 +313,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 
-  Widget _buildHeaderSection(Product product) {
+  Widget _buildHeaderSection(Product product, bool isStockUpdating) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -300,6 +404,31 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             ),
           ],
         ),
+        const SizedBox(height: 16),
+        Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          children: [
+            ElevatedButton.icon(
+              onPressed: isStockUpdating
+                  ? null
+                  : () => _handleAdjustStock(increase: true),
+              icon: const Icon(Icons.add),
+              label: const Text('Increase stock'),
+            ),
+            OutlinedButton.icon(
+              onPressed: isStockUpdating || product.stockCount == 0
+                  ? null
+                  : () => _handleAdjustStock(increase: false),
+              icon: const Icon(Icons.remove),
+              label: const Text('Reduce stock'),
+            ),
+          ],
+        ),
+        if (isStockUpdating) ...[
+          const SizedBox(height: 12),
+          const LinearProgressIndicator(),
+        ],
       ],
     );
   }

@@ -642,6 +642,8 @@ class _HomePageState extends State<HomePage> {
     switch (status.toLowerCase()) {
       case 'pending':
         return Colors.orange;
+      case 'shipped':
+        return Colors.blue;
       case 'completed':
         return Colors.green;
       case 'cancelled':
@@ -655,6 +657,8 @@ class _HomePageState extends State<HomePage> {
     switch (status.toLowerCase()) {
       case 'pending':
         return revenue.pendingTotal;
+      case 'shipped':
+        return revenue.shippedTotal;
       case 'completed':
         return revenue.completedTotal;
       case 'cancelled':

@@ -104,7 +104,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     final currentOrder = orderProvider.currentOrder;
     if (currentOrder == null) return;
 
-    final statuses = ['pending', 'completed', 'cancelled'];
+    final statuses = ['pending', 'shipped', 'completed', 'cancelled'];
     final currentStatus = currentOrder.status.toLowerCase();
 
     showDialog(
@@ -527,6 +527,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     switch (status.toLowerCase()) {
       case 'pending':
         return Colors.orange;
+      case 'shipped':
+        return Colors.blue;
       case 'completed':
         return Colors.green;
       case 'cancelled':

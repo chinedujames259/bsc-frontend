@@ -89,5 +89,35 @@ class Product {
       return fallback;
     }
   }
+
+  Product copyWith({
+    int? id,
+    String? slug,
+    int? userId,
+    int? categoryId,
+    String? sku,
+    String? name,
+    String? description,
+    int? stockCount,
+    String? price,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    List<ProductImage>? images,
+  }) {
+    return Product(
+      id: id ?? this.id,
+      slug: slug ?? this.slug,
+      userId: userId ?? this.userId,
+      categoryId: categoryId ?? this.categoryId,
+      sku: sku ?? this.sku,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      stockCount: stockCount ?? this.stockCount,
+      price: price ?? this.price,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      images: images ?? this.images,
+    );
+  }
 }
 
