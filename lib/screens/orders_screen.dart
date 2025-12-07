@@ -323,7 +323,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _startCreatingInvoice,
         icon: const Icon(Icons.add),
-        label: const Text('New Invoice'),
+        label: const Text('New Order'),
       ),
     );
   }
@@ -358,7 +358,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       ),
                       const Expanded(
                         child: Text(
-                          'Create Invoice',
+                          'Create Order',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 20,
@@ -464,7 +464,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                           ),
                         ),
                         Text(
-                          '\$${_calculateTotal().toStringAsFixed(2)}',
+                          '₦${_calculateTotal().toStringAsFixed(2)}',
                           style: const TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -1003,7 +1003,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                 // Price
                                 Flexible(
                                   child: Text(
-                                    '\₦${item.total.toStringAsFixed(2)}',
+                                    '₦${item.total.toStringAsFixed(2)}',
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16,

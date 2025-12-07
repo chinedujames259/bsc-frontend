@@ -23,49 +23,31 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   final _searchController = TextEditingController();
   String? _searchQuery;
-
   @override
   void initState() {
     super.initState();
     Future.microtask(() {
       context.read<CategoryProvider>().fetchCategories();
       context.read<ProductProvider>().fetchProducts();
-      context.read<StatsProvider>().fetchStats();
-    });
-  }
-
+      context.read<StatsProvider>().fetchStats();});}
   @override
   void dispose() {
     _searchController.dispose();
-    super.dispose();
-  }
-
+    super.dispose();}
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
       // Clear search query when switching away from search tab
       if (index != 1) {
-        _searchQuery = null;
-      }
+        _searchQuery = null;}
       // Clear search when switching to orders tab
-      if (index == 2) {
-        _searchQuery = null;
-      }
-    });
-  }
-
+      if (index == 2) {_searchQuery = null;}});}
   void _navigateToSearch(String query) {
-    setState(() {
-      _searchQuery = query.trim();
-      _selectedIndex = 1;
-    });
-  }
-
+    setState(() { _searchQuery = query.trim(); _selectedIndex = 1;});}
   Widget _getCurrentPage() {
     switch (_selectedIndex) {
       case 0:
-        return HomePage(
-          searchController: _searchController,
+        return HomePage( searchController: _searchController,
           onSearchSubmitted: _navigateToSearch,
         );
       case 1:
@@ -77,20 +59,14 @@ class _HomeScreenState extends State<HomeScreen> {
       default:
         return HomePage(
           searchController: _searchController,
-          onSearchSubmitted: _navigateToSearch,
-        );
-    }
-  }
-
+          onSearchSubmitted: _navigateToSearch,);}}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _selectedIndex == 0 || _selectedIndex == 2
-          ? null
+      appBar: _selectedIndex == 0 || _selectedIndex == 2? null
           : AppBar(
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-              title: Text(_selectedIndex == 1 ? 'Search' : 'Profile'),
-            ),
+              title: Text(_selectedIndex == 1 ? 'Search' : 'Profile'), ),
       body: _getCurrentPage(),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -99,22 +75,12 @@ class _HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
           BottomNavigationBarItem(
             icon: Icon(Icons.receipt_long),
-            label: 'Orders',
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-      ),
+            label: 'Orders', ),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),  ],
+        currentIndex: _selectedIndex,onTap: _onItemTapped,  ),
       floatingActionButton: _selectedIndex == 0
           ? FloatingActionButton(
-              onPressed: () => _showAddOptions(context),
-              child: const Icon(Icons.add),
-            )
-          : null,
-    );
-  }
-
+              onPressed: () => _showAddOptions(context),child: const Icon(Icons.add),): null,);}
   void _showAddOptions(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -132,13 +98,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => const AddProductScreen(),
-                  ),
-                );
+                  ), );
                 if (result == true && mounted) {
                   context.read<ProductProvider>().fetchProducts();
-                }
-              },
-            ),
+                }},),
             ListTile(
               leading: const Icon(Icons.category, color: Colors.teal),
               title: const Text('Add Category'),
@@ -152,15 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
                 if (result == true && mounted) {
                   context.read<CategoryProvider>().fetchCategories();
-                }
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+                }}, ),],),),);}}
 
 class HomePage extends StatefulWidget {
   final TextEditingController searchController;
@@ -1249,13 +1204,13 @@ class ProfilePage extends StatelessWidget {
             user?.email ?? '',
             style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
           ),
-          const SizedBox(height: 32),
-          _buildProfileOption(
-            context,
-            icon: Icons.person_outline,
-            title: 'Edit Profile',
-            onTap: () {},
-          ),
+          // const SizedBox(height: 32),
+          // _buildProfileOption(
+          //   context,
+          //   icon: Icons.person_outline,
+          //   title: 'Edit Profile',
+          //   onTap: () {},
+          // ),
           _buildProfileOption(
             context,
             icon: Icons.shopping_bag_outlined,
@@ -1280,12 +1235,12 @@ class ProfilePage extends StatelessWidget {
               );
             },
           ),
-          _buildProfileOption(
-            context,
-            icon: Icons.settings_outlined,
-            title: 'Settings',
-            onTap: () {},
-          ),
+          // _buildProfileOption(
+          //   context,
+          //   icon: Icons.settings_outlined,
+          //   title: 'Settings',
+          //   onTap: () {},
+          // ),
           const SizedBox(height: 32),
           SizedBox(
             width: double.infinity,
